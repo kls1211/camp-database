@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>全国キャンプ場データベース</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>全国キャンプ場データベース</h1>
+
+  <div class="search-box">
+    <label>場所: <input type="text" id="location" placeholder="例: 山梨, 道志みち"></label>
+    <label>気温(℃): <input type="number" id="temperature" placeholder="例: 20"></label>
+    <label>形態: 
+      <select id="type">
+        <option value="">指定なし</option>
+        <option value="オートキャンプ">オートキャンプ</option>
+        <option value="フリーサイト">フリーサイト</option>
+      </select>
+    </label>
+    <button onclick="search()">検索</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

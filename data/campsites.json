@@ -1,0 +1,18 @@
+[
+  {
+    "name": "道志の森キャンプ場",
+    "location": "山梨県道志村",
+    "type": "フリーサイト",
+    "avg_temp": 20,
+    "website": "https://www.doshinomori.jp/",
+    "map": "https://goo.gl/maps/abcd1234"
+  },
+  {
+    "name": "ふもとっぱらキャンプ場",
+    "location": "静岡県富士宮市",
+    "type": "オートキャンプ",
+    "avg_temp": 18,
+    "website": "https://fumotoppara.net/",
+    "map": "https://goo.gl/maps/efgh5678"
+  }
+]
