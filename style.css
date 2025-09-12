@@ -1,0 +1,159 @@
+/* 視認性＆操作性重視 */
+:root{
+  --base-font: 20px;
+  --card-padding: 16px;
+  --gap: 12px;
+  --primary: #b36b3f; /* 落ち着いた暖色（茶寄り） */
+  --primary-border: #a25f38;
+}
+@media (max-width: 480px){
+  :root{
+    --base-font: 28px;
+    --card-padding: 18px;
+    --gap: 14px;
+  }
+}
+
+*{ box-sizing: border-box; }
+html, body{
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: var(--base-font);
+  line-height: 1.6;
+  color: #111;
+  background: #fff;
+}
+header{
+  padding: 12px 16px;
+  background: #f7f2ee;
+  border-bottom: 2px solid #eaded5;
+}
+h1{
+  margin: 0;
+  font-size: 1.2em;
+  color: #5a3a26;
+}
+main{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.controls{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--gap);
+  margin-bottom: 12px;
+}
+.field{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: var(--card-padding);
+}
+.row{ display:flex; align-items: end; gap: var(--gap); }
+.column{ display:flex; flex-direction: column; gap: var(--gap); }
+.wrap{ flex-wrap: wrap; }
+.gap{ gap: var(--gap); }
+
+.subfield{ flex: 1; display: flex; flex-direction: column; gap: 6px; }
+label, legend{ font-weight: 600; }
+input[type="text"], select{
+  font-size: 1em;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #bbb;
+  width: 100%;
+}
+.check{ display: inline-flex; align-items: center; gap: 8px; margin-right: 14px; }
+.check input{ width: 22px; height: 22px; }
+
+.hint{ color:#555; font-size: 0.8em; }
+
+.buttons{ align-items: stretch; }
+button.primary{
+  font-size: 1em;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 2px solid var(--primary-border);
+  background: var(--primary);
+  color: #fff;
+  width: 100%; /* 横長（2倍以上の存在感） */
+  cursor: pointer;
+}
+button.primary:hover{ filter: brightness(0.95); }
+
+.import-btn, .template-link{
+  font-size: 0.7em;  /* 約1/3の大きさ */
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid #aaa;
+  background: #fff;
+  color: #333;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.import-btn.small, .template-link.small{ transform-origin:left; }
+.import-btn input{
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.summary{
+  margin: 8px 0 6px;
+  color: #333;
+}
+
+.results{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--gap);
+  margin-top: 10px;
+}
+.card{
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: var(--card-padding);
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.card h3{ margin: 0 0 6px; font-size: 1.05em; color:#5a3a26; }
+.meta{ margin: 6px 0; }
+.badges{ display:flex; gap: 8px; flex-wrap:wrap; }
+.badge{
+  display:inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background:#f1e6de;
+  border:1px solid #e5d2c2;
+  font-size: 0.85em;
+}
+.links{ margin-top: 8px; display:flex; gap: 12px; flex-wrap:wrap; }
+.links a{ color:#0055cc; text-decoration: underline; }
+
+.pagination{
+  display:flex;
+  gap: 8px;
+  justify-content:center;
+  align-items:center;
+  margin: 18px 0 30px;
+  flex-wrap: wrap;
+}
+.page-btn{
+  padding: 10px 14px;
+  border-radius: 10px;
+  border:1px solid #bbb;
+  background:#fff;
+  cursor:pointer;
+}
+.page-btn[disabled]{ opacity:0.5; cursor:not-allowed; }
+.page-info{ padding: 6px 10px; }
