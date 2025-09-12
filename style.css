@@ -42,3 +42,37 @@ button.secondary:active,button.secondary.active{ background:var(--green-active);
 .page-btn{ padding:10px 14px; border-radius:10px; border:1px solid #bbb; background:#fff; cursor:pointer; }
 .page-btn[disabled]{ opacity:.5; cursor:not-allowed; }
 .page-info{ padding:6px 10px; }
+/* === Import buttons & template link (fix) === */
+.buttons .row.wrap { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+
+.import-btn{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1.5px solid #bbb;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;         /* 1行で表示 */
+}
+.import-btn.small{ font-size:.90em; padding:6px 10px; }
+/* ラベルの中にネイティブ<input type="file">を全体かぶせて見えないように */
+.import-btn input[type="file"]{
+  position:absolute; inset:0; width:100%; height:100%;
+  opacity:0; cursor:pointer;
+}
+
+/* CSVテンプレートのリンクもボタン風に */
+.template-link{
+  display:inline-block;
+  padding: 8px 12px;
+  border: 1.5px solid #bbb;
+  border-radius: 10px;
+  background:#fff;
+  text-decoration:none;
+  color: inherit;
+  white-space: nowrap;         /* 折り返さない（縦に割れない） */
+}
+.template-link.small{ font-size:.90em; padding:6px 10px; }
