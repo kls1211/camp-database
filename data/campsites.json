@@ -1,0 +1,74 @@
+[
+  {
+    "name": "道志の森キャンプ場",
+    "prefecture": "山梨県",
+    "area": "道志村",
+    "type": "フリー",
+    "avg_temp": 20,
+    "monthly_avg": {
+      "7": 21,
+      "8": 22,
+      "9": 19
+    },
+    "free_parking": "駐車場隣接",
+    "tags": [
+      "炊事場",
+      "温浴"
+    ],
+    "website": "https://www.doshinomori.jp/",
+    "map": "https://goo.gl/maps/abcd1234"
+  },
+  {
+    "name": "ふもとっぱらキャンプ場",
+    "prefecture": "静岡県",
+    "area": "富士宮市",
+    "type": "オート",
+    "avg_temp": 18,
+    "monthly_avg": {
+      "7": 19,
+      "8": 20,
+      "9": 17
+    },
+    "free_parking": "",
+    "tags": [
+      "電源",
+      "炊事場"
+    ],
+    "website": "https://fumotoppara.net/",
+    "map": "https://goo.gl/maps/efgh5678"
+  },
+  {
+    "name": "A湖畔キャンプ場",
+    "prefecture": "長野県",
+    "area": "佐久市",
+    "type": "オート/フリー併設",
+    "avg_temp": 16,
+    "monthly_avg": {
+      "7": 18,
+      "8": 19
+    },
+    "free_parking": "",
+    "tags": [
+      "電源"
+    ],
+    "website": "",
+    "map": ""
+  },
+  {
+    "name": "B高原フリーサイト",
+    "prefecture": "群馬県",
+    "area": "〇〇村",
+    "type": "フリー",
+    "avg_temp": 14,
+    "monthly_avg": {
+      "7": 16,
+      "8": 17
+    },
+    "free_parking": "駐車場なし",
+    "tags": [
+      "炊事場"
+    ],
+    "website": "",
+    "map": ""
+  }
+]
