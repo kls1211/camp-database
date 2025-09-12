@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>全国キャンプ場データベース（試作 v2）</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>全国キャンプ場データベース（試作 v2）</h1>
+  </header>
+
+  <main>
+    <section class="controls">
+      <div class="field">
+        <label for="location">場所</label>
+        <input id="location" type="text" placeholder="例: 山梨, 道志村, 富士宮">
+      </div>
+
+      <div class="field row">
+        <div class="subfield">
+          <label for="tempValue">気温</label>
+          <select id="tempValue"></select>
+        </div>
+        <div class="subfield">
+          <label for="tempOp">条件</label>
+          <select id="tempOp">
+            <option value="">指定なし</option>
+            <option value="gte">以上</option>
+            <option value="lt">未満</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="type">形態</label>
+        <select id="type">
+          <option value="">指定なし</option>
+          <option value="オート">オート</option>
+          <option value="フリー">フリー</option>
+          <option value="オート/フリー併設">オート/フリー併設</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="freeParking">フリーの補助条件</label>
+        <select id="freeParking" disabled>
+          <option value="">指定なし</option>
+          <option value="駐車場隣接">駐車場隣接</option>
+          <option value="駐車場なし">駐車場なし</option>
+        </select>
+        <small class="hint">※「形態」でフリーを選ぶと有効になります</small>
+      </div>
+
+      <fieldset class="field">
+        <legend>設備タグで絞り込み</legend>
+        <label class="check"><input type="checkbox" value="電源" class="tag-check">電源</label>
+        <label class="check"><input type="checkbox" value="炊事場" class="tag-check">炊事場</label>
+        <label class="check"><input type="checkbox" value="温浴" class="tag-check">温浴</label>
+      </fieldset>
+
+      <div class="buttons row">
+        <button id="searchBtn">検索</button>
+        <label class="import-btn">
+          JSON読込
+          <input id="jsonInput" type="file" accept=".json">
+        </label>
+        <label class="import-btn">
+          CSV読込
+          <input id="csvInput" type="file" accept=".csv">
+        </label>
+        <a class="template-link" href="data/template.csv" download>CSVテンプレート</a>
+      </div>
+    </section>
+
+    <section id="summary" class="summary"></section>
+
+    <section id="results" class="results"></section>
+
+    <nav id="pagination" class="pagination" aria-label="ページング"></nav>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
