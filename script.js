@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async()=>{
   runSearch(1,true);
 });
 async function loadDefaultData(){
-  try{ const res=await fetch("data/japan_campsites.json?v=310"); DATA=await res.json(); }catch(e){ DATA=[]; }
+  try{ const res=await fetch("data/japan_campsites.json?v=311"); DATA=await res.json(); }catch(e){ DATA=[]; }
 }
 function onTypeChange(){
   const type=document.getElementById("type").value;
@@ -31,31 +31,55 @@ function resetFilters(){
   document.getElementById("searchBtn").classList.remove("searched"); runSearch(1,true);
 }
 function getSelectedTags(){ return Array.from(document.querySelectorAll(".tag-check:checked")).map(el=>el.value); }
+function numOrNull(x){ if(x===null||x===undefined||x==="") return null; const n=Number(x); return Number.isFinite(n)? n : null; }
+function mean(arr){ if(!arr||!arr.length) return null; const s=arr.reduce((a,b)=>a+b,0); return s/arr.length; }
 function runSearch(page=1,reset=false){
   if(reset){ FILTERED=[]; } currentPage=page;
   const prefecture=document.getElementById("prefecture").value;
   const area=document.getElementById("area").value.trim();
-  const tempMonth=document.getElementById("tempMonth").value;
-  const tempStr=document.getElementById("tempValue").value;
-  const tempOp=document.getElementById("tempOp").value;
+  const tempMonth=document.getElementById("tempMonth").value; // "" or "1".."12"
+  const tempStr=document.getElementById("tempValue").value;   // "" or number-like string
+  const tempOp=document.getElementById("tempOp").value;       // "", "gte", "lt"
   const type=document.getElementById("type").value;
   const freeParking=document.getElementById("freeParking").value;
   const tags=getSelectedTags();
+
   FILTERED=DATA.filter(site=>{
     const pref=site.prefecture||"";
     const region=site.area||site.location||"";
     if(prefecture && pref!==prefecture) return false;
     if(area){ const hay=`${region}${site.name||""}`; if(!hay.includes(area)) return false; }
+
+    // --- Temperature filtering (robust) ---
     if(tempStr!==""){
-      const targetMonth=tempMonth||""; let v=null;
-      if(site.monthly_avg && targetMonth){ v=Number(site.monthly_avg[String(targetMonth)]); }
-      else if(!targetMonth && typeof site.avg_temp!=="undefined"){ v=Number(site.avg_temp); }
-      if(v===null || Number.isNaN(v)) return false;
-      const t=Number(tempStr);
+      const t = Number(tempStr);
+      if(!Number.isFinite(t)) return false;
+
+      let v = null;
+      const mm = tempMonth? String(tempMonth): "";
+      // When a month is selected
+      if(mm){
+        if(site.monthly_avg){
+          // accept string or numeric keys
+          const keyVal = site.monthly_avg[mm] ?? site.monthly_avg[Number(mm)];
+          v = numOrNull(keyVal);
+        }
+      }else{
+        // No month: use avg_temp if present and numeric; otherwise compute from monthly_avg
+        const at = numOrNull(site.avg_temp);
+        if(at!==null) v = at;
+        else if(site.monthly_avg){
+          const arr = Object.values(site.monthly_avg).map(numOrNull).filter(x=>x!==null);
+          v = mean(arr);
+        }
+      }
+      if(v===null) return false;
+
       if(tempOp==="gte" && !(v>=t)) return false;
       if(tempOp==="lt" && !(v<t)) return false;
-      if(tempOp==="" && v!==t) return false;
+      if(tempOp==="" && Math.abs(v - t) > 1e-9) return false; // exact match
     }
+
     if(type && site.type!==type) return false;
     if(type==="フリー" && freeParking){ if((site.free_parking||"")!==freeParking) return false; }
     if(tags.length){
@@ -94,8 +118,14 @@ function renderResults(){
 }
 function renderTemp(site){
   const m=document.getElementById("tempMonth").value;
-  if(m && site.monthly_avg && site.monthly_avg[String(m)]!=null){ return `<div class="meta">気温（月平均 ${m}月）：${Number(site.monthly_avg[String(m)])}℃</div>`; }
-  else if(typeof site.avg_temp!=="undefined"){ return `<div class="meta">平均気温：${Number(site.avg_temp)}℃</div>`; }
+  if(m && site.monthly_avg){
+    const val = site.monthly_avg[String(m)] ?? site.monthly_avg[Number(m)];
+    if(val!==undefined && val!==null && !Number.isNaN(Number(val))){
+      return `<div class="meta">気温（月平均 ${m}月）：${Number(val)}℃</div>`;
+    }
+  }else if(site.avg_temp!==undefined && site.avg_temp!==null){
+    return `<div class="meta">平均気温：${Number(site.avg_temp)}℃</div>`;
+  }
   return "";
 }
 function renderPagination(){
@@ -120,7 +150,7 @@ async function onCsvImport(evt){ const f=evt.target.files[0]; if(!f) return;
     const arr=rows.map(line=>{
       const cols=parseCsvLine(line, header.length); const prefecture=hasPrefArea? cols[idx("prefecture")]: ""; const area=hasPrefArea? cols[idx("area")]: ""; const location=hasLocation? cols[idx("location")]: "";
       let monthly=null; if(hasMonthly){ monthly={}; for(let k=1;k<=12;k++){ const id=idx("m"+k); if(id!==-1 && cols[id] !== "") monthly[String(k)]=Number(cols[id]); } }
-      return { name: cols[idx("name")], prefecture, area, location, type: cols[idx("type")], avg_temp: Number(cols[idx("avg_temp")]), monthly_avg: monthly,
+      return { name: cols[idx("name")], prefecture, area, location, type: cols[idx("type")], avg_temp: (cols[idx("avg_temp")]!==""? Number(cols[idx("avg_temp")]): null), monthly_avg: monthly,
         free_parking: cols[idx("free_parking")]||"", tags: (cols[idx("tags")]||"").split(";").map(s=>s.trim()).filter(Boolean), website: cols[idx("website")]||"", map: cols[idx("map")]||"" };
     });
     DATA=normalizeRecords(arr); runSearch(1,true); alert("CSVを読み込みました（"+DATA.length+" 件）。");
@@ -129,6 +159,9 @@ function parseCsvLine(line, n){ const out=[]; let cur=""; let inQ=false; for(let
   if(ch=='"'){ if(inQ && line[i+1]=='"'){ cur+='"'; i++; } else inQ=!inQ; } else if(ch==',' && !inQ){ out.push(cur); cur=""; } else { cur+=ch; } } out.push(cur); while(out.length<n) out.push(""); return out; }
 function normalizeRecords(arr){
   return arr.map(x=>{ const pref=x.prefecture || (x.location? x.location.slice(0,3): ""); const area=x.area || ""; const monthly=x.monthly_avg || null;
-    return { name:x.name||"", prefecture:pref, area: area || x.location || "", type:x.type||"", avg_temp: Number(x.avg_temp)||0, monthly_avg: monthly, free_parking:x.free_parking||"",
+    // Ensure numbers are numbers or null
+    let avg = (x.avg_temp===null||x.avg_temp===undefined||x.avg_temp==="") ? null : Number(x.avg_temp);
+    if(avg!==null && !Number.isFinite(avg)) avg=null;
+    return { name:x.name||"", prefecture:pref, area: area || x.location || "", type:x.type||"", avg_temp: avg, monthly_avg: monthly, free_parking:x.free_parking||"",
       tags: Array.isArray(x.tags)? x.tags: (typeof x.tags==="string"? x.tags.split(";").map(s=>s.trim()).filter(Boolean): []), website:x.website||"", map:x.map||"" }; });
 }
